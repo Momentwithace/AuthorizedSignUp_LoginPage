@@ -1,11 +1,15 @@
 package com.ace.authorizereg_loginpage.appuser;
 
+import com.ace.authorizereg_loginpage.registration.token.ConfirmationToken;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -36,6 +40,14 @@ public class AppUserService implements UserDetailsService {
         appUser.setPassword(encodedPassword);
 
         appUserRepository.save(appUser);
+
+        String  token = UUID.randomUUID().toString();
+        ConfirmationToken confirmationToken = new ConfirmationToken(
+               token,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusMinutes(15),
+                appUser
+        );
         return "it works";
     }
 }
